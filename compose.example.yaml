@@ -54,8 +54,6 @@ services:
       environment:
          PMA_HOST: mysql
          PMA_PORT: 3306
-         PMA_USER: ${DB_USER}
-         PMA_PASSWORD: ${DB_PASSWORD}
          LETSENCRYPT_HOST: ${PMA_DOMAIN}
          VIRTUAL_HOST: ${PMA_DOMAIN}
          VIRTUAL_PORT: 80
