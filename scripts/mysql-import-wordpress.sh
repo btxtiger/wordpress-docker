@@ -15,7 +15,7 @@ fi
 IMPORT_DIR="$PROJECT_ROOT/file-share/import"
 ENV_FILE="$PROJECT_ROOT/.env"
 SERVICE_NAME="mysql"
-DB_TYPE="mysql"
+DB_TYPE="mariadb"
 
 # Load .env if it exists
 if [ -f "$ENV_FILE" ]; then

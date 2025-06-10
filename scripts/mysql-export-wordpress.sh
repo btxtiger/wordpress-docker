@@ -37,7 +37,7 @@ EXPORT_FILE="$EXPORT_DIR/${DB_DATABASE}_backup_$TIMESTAMP.sql"
 # Dump the WordPress database using root
 echo "💾 Creating database dump of $DB_DATABASE..."
 docker compose exec -T "$SERVICE_NAME" \
-   mysqldump -uroot -p"$DB_ROOT_PASSWORD" "$DB_DATABASE" >"$EXPORT_FILE"
+   mariadbdump -uroot -p"$DB_ROOT_PASSWORD" "$DB_DATABASE" >"$EXPORT_FILE"
 
 echo "✅ Dump completed: $EXPORT_FILE"
 echo ""
