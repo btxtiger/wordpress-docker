@@ -1,7 +1,6 @@
 services:
-   db:
+   mysql:
       image: mariadb:lts
-      container_name: ${APP_NAME}_db
       restart: unless-stopped
       command:
          - '--character-set-server=utf8mb4'
@@ -18,18 +17,17 @@ services:
          MYSQL_USER: ${DB_USER}
          MYSQL_PASSWORD: ${DB_PASSWORD}
       volumes:
-         - db_volume:/var/lib/mysql
+         - mysql_volume:/var/lib/mysql
       networks:
-         - app
+         app:
 
    wp:
       image: wordpress:php8.4-apache
-      container_name: ${APP_NAME}_wp
       restart: unless-stopped
       depends_on:
-         - db
+         - mysql
       environment:
-         WORDPRESS_DB_HOST: db:3306
+         WORDPRESS_DB_HOST: mysql:3306
          WORDPRESS_DB_NAME: ${DB_DATABASE}
          WORDPRESS_DB_USER: ${DB_USER}
          WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
@@ -38,10 +36,10 @@ services:
          VIRTUAL_PORT: 80
       volumes:
          - wp_volume:/var/www/html
-         - ./docker/wp.php.ini:/usr/local/etc/php/conf.d/wp.php.ini
+         - ./wordpress/wp.php.ini:/usr/local/etc/php/conf.d/wp.php.ini
       networks:
-         - app
-         - main-nginx-proxy
+         app:
+         main-nginx-proxy:
       # healthcheck:
       #    test: ["CMD", "curl", "-f", "http://localhost/"]
       #    interval: 30s
@@ -50,12 +48,11 @@ services:
 
    pma:
       image: phpmyadmin:latest
-      container_name: ${APP_NAME}_pma
       restart: unless-stopped
       depends_on:
-         - db
+         - mysql
       environment:
-         PMA_HOST: db
+         PMA_HOST: mysql
          PMA_PORT: 3306
          PMA_USER: ${DB_USER}
          PMA_PASSWORD: ${DB_PASSWORD}
@@ -63,8 +60,8 @@ services:
          VIRTUAL_HOST: ${PMA_DOMAIN}
          VIRTUAL_PORT: 80
       networks:
-         - app
-         - main-nginx-proxy
+         app:
+         main-nginx-proxy:
       # healthcheck:
       #    test: ["CMD", "curl", "-f", "http://localhost/"]
       #    interval: 30s
@@ -73,7 +70,6 @@ services:
 
    files:
       image: filebrowser/filebrowser:latest
-      container_name: ${APP_NAME}_filebrowser
       restart: unless-stopped
       depends_on:
          - wp
@@ -83,22 +79,18 @@ services:
          VIRTUAL_PORT: 80
       volumes:
          - wp_volume:/srv
-         - ./filebrowser/filebrowser.db:/database.db
+         - fb_volume:/fb_data
          - ./filebrowser/filebrowser.json:/.filebrowser.json
-      user: "${UID:-1000}:${GID:-1000}"
       networks:
-         - app
-         - main-nginx-proxy
-      # healthcheck:
-      #    test: ["CMD", "curl", "-f", "http://localhost/"]
-      #    interval: 30s
-      #    timeout: 10s
-      #    retries: 5
+         app:
+         main-nginx-proxy:
 
 volumes:
-   db_volume:
+   mysql_volume:
       driver: local
    wp_volume:
+      driver: local
+   fb_volume:
       driver: local
 
 networks:
