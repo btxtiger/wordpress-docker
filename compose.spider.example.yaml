@@ -1,6 +1,5 @@
 services:
-    sitemap_spider:
-        container_name: sw_spider
+    spider:
         image: warmup/spider
         environment:
             CONCURRENT_REQUESTS: 4
