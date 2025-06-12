@@ -29,6 +29,6 @@ build_image() {
 }
 
 # Build spider image
-build_image "$PROJECT_ROOT/spider/Dockerfile" "$PROJECT_ROOT/spider" "shopware6/spider"
+build_image "$PROJECT_ROOT/spider/Dockerfile" "$PROJECT_ROOT/spider" "warmup/spider"
 
 # ... build other images as needed

@@ -1,0 +1,10 @@
+services:
+    sitemap_spider:
+        container_name: sw_spider
+        image: warmup/spider
+        environment:
+            CONCURRENT_REQUESTS: 4
+            URL_REQUEST_TIMEOUT: 1500
+        volumes:
+            - ./spider-sitemaps.yaml:/app/sitemaps.yaml
+        restart: unless-stopped
